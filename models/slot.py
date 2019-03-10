@@ -1,9 +1,10 @@
-from util.contants import VehicleSize
-
 __author__ = "Suyash Soni"
 __email__ = "suyash.soni248@gmail.com"
 
-class Slot(object):
+from util.contants import VehicleSize
+from abc import ABC
+
+class Slot(ABC):
     """
     Represents a parking slot.
     """
