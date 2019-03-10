@@ -1,3 +1,5 @@
+from util.contants import VehicleSize
+
 __author__ = "Suyash Soni"
 __email__ = "suyash.soni248@gmail.com"
 
@@ -7,6 +9,9 @@ class Slot(object):
     """
     def __init__(self, slot_number):
         self.slot_number = int(slot_number)
+
+    def can_park(self, vehicle):
+        pass
 
     def __str__(self):
         return str(self.slot_number)
@@ -31,3 +36,15 @@ class Slot(object):
 
     def __ne__(self, other):
         return self.slot_number != other.slot_number
+
+class SmallSlot(Slot):
+    def can_park(self, vehicle):
+        return vehicle.size in (VehicleSize.SMALL,)
+
+class MediumSlot(Slot):
+    def can_park(self, vehicle):
+        return vehicle.size in (VehicleSize.SMALL, VehicleSize.MEDIUM)
+
+class LargeSlot(Slot):
+    def can_park(self, vehicle):
+        return vehicle.size in (VehicleSize.SMALL, VehicleSize.MEDIUM, VehicleSize.LARGE)
