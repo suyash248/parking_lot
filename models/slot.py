@@ -38,6 +38,9 @@ class Slot(ABC):
     def __ne__(self, other):
         return self.slot_number != other.slot_number
 
+    def __hash__(self):
+        return self.slot_number.__hash__()
+
 class SmallSlot(Slot):
     def can_park(self, vehicle):
         return vehicle.size in (VehicleSize.SMALL,)

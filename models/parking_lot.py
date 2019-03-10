@@ -1,6 +1,8 @@
 __author__ = "Suyash Soni"
 __email__ = "suyash.soni248@gmail.com"
 
+import copy
+
 class ParkingLot(object):
     """
     Instance of this class represents the parking lot.
@@ -14,7 +16,15 @@ class ParkingLot(object):
         self.__size__ = size
         self.__occupied_slots__ = dict()
         self.__vehicle_slot_mapping__ = dict()
-        self.__available_slots__ = list(slots)
+        self.__available_slots__ = set(slots)
+
+    @property
+    def occupied_slots(self):
+        return copy.copy(self.__occupied_slots__)
+
+    @property
+    def available_slots(self):
+        return copy.copy(self.__available_slots__)
 
     # Time complexity: O(1)
     def is_full(self):
@@ -22,3 +32,23 @@ class ParkingLot(object):
         Checks if there is any vacant slot available.
         """
         return len(self.__occupied_slots__) >= self.__size__
+
+    def get_closest_slot(self):
+        if not self.__available_slots__:
+            return None
+        return min(self.__available_slots__)
+
+    def is_slot_occupied(self, slot_number):
+        return slot_number in self.__occupied_slots__
+
+    def is_vehicle_parked(self, registration_number):
+        return registration_number in self.__vehicle_slot_mapping__
+
+    def occupy_slot(self, slot, vehicle):
+        self.__occupied_slots__[slot.slot_number] = vehicle.registration_number, vehicle.color
+        self.__vehicle_slot_mapping__[vehicle.registration_number] = slot.slot_number
+
+    def vacate_slot(self, slot, reg_num):
+        self.__occupied_slots__.pop(slot.slot_number)
+        self.__vehicle_slot_mapping__.pop(reg_num)
+        self.__available_slots__.add(slot)
