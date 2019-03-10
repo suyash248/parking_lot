@@ -72,7 +72,7 @@ class ParkingService(object):
         """
         :return: Returns a tuple of `slot_number`, `registration_number`, `color`.
         """
-        for slot_num, (reg_num, col) in self.parking_lot.occupied_slots.items():
+        for slot_num, (reg_num, col) in sorted(self.parking_lot.occupied_slots.items()):
             yield slot_num, reg_num, col.capitalize()
 
     def slot_numbers_by_color(self, color):
