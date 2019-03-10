@@ -42,6 +42,9 @@ class Slot(ABC):
         return self.slot_number.__hash__()
 
 class SmallSlot(Slot):
+    """
+    For now, we are considering that all the slots are `SmallSlot(s)`.
+    """
     def can_park(self, vehicle):
         return vehicle.size in (VehicleSize.SMALL,)
 

@@ -6,7 +6,7 @@ from services.parking import ParkingService
 from util.constants import Command, ErrorConstant, Response
 from util.logger import logger
 from models.vehicle import Vehicle, Car
-from models.slot import Slot, SmallSlot
+from models.slot import SmallSlot
 
 class Dispatcher(object):
     """
