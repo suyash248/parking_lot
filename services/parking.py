@@ -19,11 +19,10 @@ class ParkingService(object):
     def parking_lot(self, parking_lot):
         self._parking_lot_ = parking_lot
 
-    def create_parking_lot(self, size, slots):
+    def create_parking_lot(self, size, slots=()):
         slots = slots or list(map(SmallSlot, range(1, size+1)))
         self.parking_lot = ParkingLot(size, slots=slots)
 
-    # Time complexity: O(log(n))
     def park(self, vehicle):
         """
         Allocate(if available) a `slot` to the `vehicle`.
@@ -67,3 +66,40 @@ class ParkingService(object):
             return Response(success=False, error=ErrorConstant.INVALID_SLOT)
         self.parking_lot.vacate_slot(slot, reg_num)
         return Response(data={'reg_num': reg_num})
+
+    # Time complexity: O(n-m), m: number of available/vacant slots.
+    def status(self):
+        """
+        :return: Returns a tuple of `slot_number`, `registration_number`, `color`.
+        """
+        for slot_num, (reg_num, col) in self.parking_lot.occupied_slots.items():
+            yield slot_num, reg_num, col.capitalize()
+
+    def slot_numbers_by_color(self, color):
+        """
+        Yields the `slot_number`, if the vehicle occupying the slot has a specific color.
+
+        :param color:
+        """
+        color = color.strip().lower() if color else None
+        for slot_num, (reg_num, col) in self.parking_lot.occupied_slots.items():
+            if color == col: yield slot_num
+
+    def registration_numbers_by_color(self, color):
+        """
+        Yields the `registration_number`, if the vehicle occupying the slot has a specific color.
+
+        :param color:
+        """
+        color = color.strip().lower() if color else None
+        for slot_num, (reg_num, col) in self.parking_lot.occupied_slots.items():
+            if color == col: yield reg_num
+
+    # Time complexity: O(1)
+    def slot_number_by_registration_number(self, registration_number):
+        """
+        Looks up the `registration_number`, and returns the `slot_number`.
+
+        :param registration_number:
+        """
+        return self.parking_lot.get_slot_by_reg_num(registration_number)

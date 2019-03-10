@@ -47,7 +47,7 @@ class Dispatcher(object):
                 vehicle = Vehicle.create(Car, reg_num, color)
 
                 # Park the vehicle.
-                response = self.parking_lot.park(vehicle)
+                response = self.parking_service.park(vehicle)
                 if response.success:
                     logger.info("Allocated slot number: {}".format(response.data['slot_num']))
                 else:
@@ -58,20 +58,20 @@ class Dispatcher(object):
                 slot_num = int(parsed_cmd.get('slot_num'))
 
                 # Vehicle is leaving the slot.
-                response = self.parking_lot.leave(Slot(int(slot_num)))
+                response = self.parking_service.leave(SmallSlot(int(slot_num)))
                 if response.success:
                     logger.info("Slot number {} is free".format(slot_num))
 
             elif cmd_key == Command.STATUS:
                 logger.info("Slot No.\tRegistration No.\tColour")
-                for slot_num, reg_num, col in self.parking_lot.status():
+                for slot_num, reg_num, col in self.parking_service.status():
                     logger.info('{}\t\t\t{}\t\t{}'.format(slot_num, reg_num, col))
 
             elif cmd_key == Command.REG_NUMS_BY_COLOR:
                 color = parsed_cmd.get('color')
 
                 # Will be better to print reg_num one-by-one, as it will save the space.
-                reg_nums = [reg_num for reg_num in self.parking_lot.registration_numbers_by_color(color)]
+                reg_nums = [reg_num for reg_num in self.parking_service.registration_numbers_by_color(color)]
                 logger.info(', '.join(reg_nums))
                 response = Response(data={'reg_nums': reg_nums})
 
@@ -79,13 +79,13 @@ class Dispatcher(object):
                 color = parsed_cmd.get('color')
 
                 # Will be better to print slot_num one-by-one, as it will save the space.
-                slot_nums = [str(slot_num) for slot_num in self.parking_lot.slot_numbers_by_color(color)]
+                slot_nums = [str(slot_num) for slot_num in self.parking_service.slot_numbers_by_color(color)]
                 logger.info(', '.join(slot_nums))
                 response = Response(data={'slot_nums': slot_nums})
 
             elif cmd_key == Command.SLOT_NUM_BY_REG_NUM:
                 reg_num = parsed_cmd.get('reg_num')
-                slot_num = self.parking_lot.slot_number_by_registration_number(reg_num)
+                slot_num = self.parking_service.slot_number_by_registration_number(reg_num)
                 logger.info(str(slot_num or 'Not found'))
                 response = Response(success=slot_num is not None, data={'slot_num': slot_num})
 

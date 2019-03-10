@@ -38,6 +38,9 @@ class ParkingLot(object):
             return None
         return min(self.__available_slots__)
 
+    def get_slot_by_reg_num(self, reg_num):
+        return self.__vehicle_slot_mapping__.get(reg_num, None)
+
     def is_slot_occupied(self, slot_number):
         return slot_number in self.__occupied_slots__
 
@@ -47,6 +50,7 @@ class ParkingLot(object):
     def occupy_slot(self, slot, vehicle):
         self.__occupied_slots__[slot.slot_number] = vehicle.registration_number, vehicle.color
         self.__vehicle_slot_mapping__[vehicle.registration_number] = slot.slot_number
+        self.__available_slots__.remove(slot)
 
     def vacate_slot(self, slot, reg_num):
         self.__occupied_slots__.pop(slot.slot_number)
