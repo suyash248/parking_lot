@@ -1,7 +1,7 @@
 __author__ = "Suyash Soni"
 __email__ = "suyash.soni248@gmail.com"
 
-from util.contants import VehicleSize
+from util.constants import VehicleSize
 from abc import ABC
 
 class Slot(ABC):

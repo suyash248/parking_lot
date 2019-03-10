@@ -2,7 +2,7 @@ __author__ = "Suyash Soni"
 __email__ = "suyash.soni248@gmail.com"
 
 from abc import ABC
-from util.contants import VehicleSize
+from util.constants import VehicleSize
 
 class Vehicle(ABC):
     """

@@ -51,3 +51,23 @@ class Color(object):
     BLUE = _ColorInfo_('blue', '#0000FF')
     GREEN = _ColorInfo_('green', '#008000')
     YELLOW = _ColorInfo_('yellow', '#FFFF33')
+
+class Response(object):
+    def __init__(self, success=True, message="", data=None, error=None):
+        self.success = success
+        self.message = message
+        self.data = data
+        self.error = error
+
+    @property
+    def to_dict(self):
+        return dict(sucess=self.success, message=self.message, data=self.data, error=self.error)
+
+class ErrorConstant(object):
+    INVALID_COMMAND = 'INVALID_COMMAND'
+    NO_PARKING_LOT_FOUND = 'NO_PARKING_LOT_FOUND'
+    PARKING_LOT_OVERFLOW = 'PARKING_LOT_OVERFLOW'
+    SLOT_OCCUPIED = 'SLOT_OCCUPIED'
+    VEHICLE_IS_ALREADY_PARKED = 'VEHICLE_IS_ALREADY_PARKED'
+    INVALID_SLOT = 'INVALID_SLOT'
+    INVALID_REGISTRATION_NUMBER = 'INVALID_REGISTRATION_NUMBER'
