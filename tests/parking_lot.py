@@ -77,6 +77,54 @@ class TestParkingLot(unittest.TestCase):
                 reg_num = l_res.data.get('reg_num', None)
                 self.assertEqual(reg_num, reg_nums[slot_num-1])
 
+    def test_6_reg_nums_by_color(self):
+        c_response = self.create_parking_lot(size=5)
+        self.assertTrue(c_response.success)
+
+        col_reg_nums_mapping = {
+            'White': {'park DL-3C-9090', 'park DL-3C-9091', 'park DL-3C-9092'},
+            'Black': {'park DL-3C-9080', 'park DL-3C-9081'}
+        }
+        for col, reg_nums in col_reg_nums_mapping.items():
+            for reg_num in reg_nums:
+                self.dispatcher.dispatch("park {} {}".format(reg_num, col))
+
+        for col in ['White', 'Black', 'Grey']:
+            response = self.dispatcher.dispatch('registration_numbers_for_cars_with_colour {}'.format(col))
+            fetched_reg_nums = set(response.data.get('reg_nums', []))
+            if fetched_reg_nums and len(fetched_reg_nums) > 0:
+                self.assertSetEqual(fetched_reg_nums, col_reg_nums_mapping.get(col, {}))
+
+    def test_7_slot_nums_by_color(self):
+        c_response = self.create_parking_lot(size=7)
+        self.assertTrue(c_response.success)
+
+        col_slot_nums_mapping = {
+            'White': {'1', '2', '3'},
+            'Black': {'4', '5'}
+        }
+        for col, slot_nums in col_slot_nums_mapping.items():
+            for slot_num in slot_nums:
+                self.dispatcher.dispatch("park DL-3C-909{} {}".format(slot_num, col))
+
+        for col in ['White', 'Black', 'Grey']:
+            response = self.dispatcher.dispatch('slot_numbers_for_cars_with_colour {}'.format(col))
+            fetched_slot_nums = set(response.data.get('slot_nums', []))
+            if fetched_slot_nums and len(fetched_slot_nums) > 0:
+                self.assertSetEqual(fetched_slot_nums, col_slot_nums_mapping.get(col, {}))
+
+    def test_8_slot_num_by_reg_num(self):
+        c_response = self.create_parking_lot(size=7)
+        self.assertTrue(c_response.success)
+
+        reg_nums = ["DL-3C-9017", "DL-3C-9071", "DL-3C-9072", "DL-3C-9018"]
+        for reg_num in reg_nums:
+            self.dispatcher.dispatch("park {} GREY".format(reg_num))
+
+        for reg_num in ["DL-3C-9017", "DL-3C-9071", "INVALID_REG_NUM1", "INVALID_REG_NUM2"]:
+            res = self.dispatcher.dispatch('slot_number_for_registration_number {}'.format(reg_num))
+            if not res.success:
+                self.assertIsNone(res.data.get('slot_num', None))
 
     def create_parking_lot(self, size=5):
         cmd = "create_parking_lot {}".format(str(size))
